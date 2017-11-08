@@ -12,6 +12,9 @@
   }
 </style>
   <body>
+    <p>Time update: 1995 
+      <input type="range" name="points" min="1995" max="2012" step="1" value="0" id="slidertime" oninput="change_year(this.value)"> 2012
+    </p>
     <p>
       Ftlter by: <label>Americas<input type="checkbox" name="Americas" value="Americas" title="Americas" id = "Americas"></input></label>
       <label>Africa<input type="checkbox" name="Africa" value="Africa" title="Africa" id = "Africa"></input></label>
@@ -37,6 +40,12 @@
 
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
+
+    function change_year(year){
+      document.cookie = "year="+year;
+      document.getElementById("tab").innerHTML = "<tr><th>name</th><th>continent</th><th>gdp</th><th>life_expectancy</th><th>population</th><th>year</th></tr>";
+        load();
+    } 
 
     function change_radio(what_do){
       if (what_do !=  "none") {
@@ -242,7 +251,33 @@ function aggregation(e, table, continent) {
 
 
 function load() {
-    d3.json("countries_2012.json", function(error, data) {
+    d3.json("countries_1995_2012.json", function(error, data) {
+          if (getCookie("Americas") != undefined) {
+            document.getElementById('Americas').checked = true;;
+            }
+            if (getCookie("Africa") != undefined) {
+                document.getElementById('Africa').checked = true;
+            }
+             if (getCookie("Asia") != undefined) {
+                document.getElementById('Asia').checked = true;;
+            }
+            if (getCookie("Europe") != undefined) {
+                document.getElementById('Europe').checked = true;
+            }
+             if (getCookie("Oceania") != undefined) {
+                document.getElementById('Oceania').checked = true;;
+            }
+            if (getCookie("Aggregation") != undefined) {
+                document.getElementById('Continent').checked = true;;
+            }
+            else{
+                document.getElementById('none').checked = true;;
+            }
+            if (getCookie("year") != undefined) {
+                document.getElementById('slidertime').value = getCookie("year");
+            }
+
+
             var columns = Object.keys(data[0]);
             var table = d3.select("table");
             tbody = table.append("tbody");
@@ -279,9 +314,15 @@ function load() {
               var rows = tbody.selectAll("tr.row").data(data).enter().append("tr").attr("class", "row");
               sortir(rows);
               sortir(rows);
+              if (getCookie("year") == undefined) {
+                var year = 0;
+              }
+              else{
+                var year = (1995 - Number(getCookie("year"))) * (-1);
+              }
              var cells = rows.selectAll("td").data(function(row) {
                     if ((getCookie("Americas") != undefined) && (row["continent"] == "Americas")) {
-                        return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                        return d3.range(Object.keys(row).length).map(function(column, i) {
                             if (i == 0) {
                                 return row["name"];
                             }
@@ -289,21 +330,22 @@ function load() {
                                 return row["continent"];
                             }
                             if (i == 2) {
-                                return row["gdp"];
+                                return row["years"][year]["gdp"];
                             }
                             if (i == 3) {
-                                return row["life_expectancy"];
+                                return row["years"][year]["life_expectancy"];
                             }
                             if (i == 4) {
-                                return row["population"];
+                                return row["years"][year]["population"];
                             }
                             if (i == 5) {
-                                return row["year"];
+
+                                return row["years"][year]["year"];
                             }
                         });
                     } else {
                         if ((getCookie("Africa") != undefined) && (row["continent"] == "Africa")) {
-                            return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                            return d3.range(Object.keys(row).length).map(function(column, i) {
                                 if (i == 0) {
                                     return row["name"];
                                 }
@@ -311,21 +353,22 @@ function load() {
                                     return row["continent"];
                                 }
                                 if (i == 2) {
-                                    return row["gdp"];
+                                    return row["years"][year]["gdp"];
                                 }
                                 if (i == 3) {
-                                    return row["life_expectancy"];
+                                    return row["years"][year]["life_expectancy"];
                                 }
                                 if (i == 4) {
-                                    return row["population"];
+                                    return row["years"][year]["population"];
                                 }
                                 if (i == 5) {
-                                    return row["year"];
+
+                                    return row["years"][year]["year"];
                                 }
                             });
                         } else {
                             if ((getCookie("Asia") != undefined) && (row["continent"] == "Asia")) {
-                                return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                                return d3.range(Object.keys(row).length).map(function(column, i) {
                                     if (i == 0) {
                                         return row["name"];
                                     }
@@ -333,21 +376,22 @@ function load() {
                                         return row["continent"];
                                     }
                                     if (i == 2) {
-                                        return row["gdp"];
+                                        return row["years"][year]["gdp"];
                                     }
                                     if (i == 3) {
-                                        return row["life_expectancy"];
+                                        return row["years"][year]["life_expectancy"];
                                     }
                                     if (i == 4) {
-                                        return row["population"];
+                                        return row["years"][year]["population"];
                                     }
                                     if (i == 5) {
-                                        return row["year"];
+
+                                        return row["years"][year]["year"];
                                     }
                                 });
                             } else {
                                 if ((getCookie("Europe") != undefined) && (row["continent"] == "Europe")) {
-                                    return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                                    return d3.range(Object.keys(row).length).map(function(column, i) {
                                         if (i == 0) {
                                             return row["name"];
                                         }
@@ -355,21 +399,22 @@ function load() {
                                             return row["continent"];
                                         }
                                         if (i == 2) {
-                                            return row["gdp"];
+                                            return row["years"][year]["gdp"];
                                         }
                                         if (i == 3) {
-                                            return row["life_expectancy"];
+                                            return row["years"][year]["life_expectancy"];
                                         }
                                         if (i == 4) {
-                                            return row["population"];
+                                            return row["years"][year]["population"];
                                         }
                                         if (i == 5) {
-                                            return row["year"];
+
+                                            return row["years"][year]["year"];
                                         }
                                     });
                                 } else {
                                     if ((getCookie("Oceania") != undefined) && (row["continent"] == "Oceania")) {
-                                        return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                                        return d3.range(Object.keys(row).length).map(function(column, i) {
                                             if (i == 0) {
                                                 return row["name"];
                                             }
@@ -377,23 +422,24 @@ function load() {
                                                 return row["continent"];
                                             }
                                             if (i == 2) {
-                                                return row["gdp"];
+                                                return row["years"][year]["gdp"];
                                             }
                                             if (i == 3) {
-                                                return row["life_expectancy"];
+                                                return row["years"][year]["life_expectancy"];
                                             }
                                             if (i == 4) {
-                                                return row["population"];
+                                                return row["years"][year]["population"];
                                             }
                                             if (i == 5) {
-                                                return row["year"];
+
+                                                return row["years"][year]["year"];
                                             }
                                         });
                                     } else {
-                                              console.log(row);
-
                                         if ((getCookie("Americas") == undefined)&&(getCookie("Africa") == undefined)&&(getCookie("Asia") == undefined)&&(getCookie("Europe") == undefined)&&(getCookie("Oceania") == undefined)) {
-                                            return d3.range(Object.keys(row).length - 3).map(function(column, i) {
+                                            return d3.range(Object.keys(row).length).map(function(column, i) {
+                                            console.log(year);
+                                              
                                               if (i == 0) {
                                                   return row["name"];
                                               }
@@ -401,16 +447,17 @@ function load() {
                                                   return row["continent"];
                                               }
                                               if (i == 2) {
-                                                  return row["gdp"];
+                                                  return row["years"][year]["gdp"];
                                               }
                                               if (i == 3) {
-                                                  return row["life_expectancy"];
+                                                  return row["years"][year]["life_expectancy"];
                                               }
                                               if (i == 4) {
-                                                  return row["population"];
+                                                  return row["years"][year]["population"];
                                               }
                                               if (i == 5) {
-                                                  return row["year"];
+
+                                                  return row["years"][year]["year"];
                                               }
                                           });
                                         }
@@ -433,25 +480,6 @@ function load() {
         }); 
       }
       zebra();
-
-        if (getCookie("Americas") != undefined) {
-            document.getElementById('Americas').checked = true;;
-        }
-        if (getCookie("Africa") != undefined) {
-            document.getElementById('Africa').checked = true;
-        }
-         if (getCookie("Asia") != undefined) {
-            document.getElementById('Asia').checked = true;;
-        }
-        if (getCookie("Europe") != undefined) {
-            document.getElementById('Europe').checked = true;
-        }
-         if (getCookie("Oceania") != undefined) {
-            document.getElementById('Oceania').checked = true;;
-        }
-        if (getCookie("Aggregation") != undefined) {
-            document.getElementById('Continent').checked = true;;
-        }
     });
 
 }
